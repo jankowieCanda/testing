@@ -58,7 +58,22 @@ class Room {
     };
 
     static totalOccupancyPercentage(rooms, startDate, endDate) {
+        let percentage;
+        let count = 0;
 
+        if(!rooms.length) {
+            throw new Error('ERROR!! NO hay habitaciones registradas!!')
+        } else if((!startDate || startDate === '') || (!endDate || endDate === '')) {
+            throw new Error('Error!! Missing Date!!');
+        } else if(Number.isInteger(startDate) || Number.isInteger(endDate)) {
+            throw new Error('Error!! Wrong date format!!');
+        }
+
+        rooms.map((room) => {
+            count += room.percentageOccupancy(startDate, endDate);
+        })
+        
+        return percentage = count / rooms.length; 
     };
 
     static availableRooms(rooms, startDate, endDate) {
@@ -112,7 +127,13 @@ let rango2 = rangeDatesEndIncluded('2024-04-15', '2024-05-01');
 console.log('rango final incluido: ' + rango2); */
 
 const room = new Room({name: 'una room', price: 200, discount: 25});
-const booking = new Booking({name: 'unName', email: 'unmail@mail.com', checkin: '2024-05-01', checkout: '2024-05-06', discount: 10})
-const booking2 = new Booking({name: 'otroName', email: 'otromail@mail.com', checkin: '2024-04-15', checkout: '2024-05-01', discount: 10})
+const booking = new Booking({name: 'unName', email: 'unmail@mail.com', checkin: '2024-05-01', checkout: '2024-05-06', discount: 10, room: room})
+const booking2 = new Booking({name: 'otroName', email: 'otromail@mail.com', checkin: '2024-04-15', checkout: '2024-05-01', discount: 10, room: room})
 room.setBookings(booking, booking2);
-console.log(room.percentageOccupancy('2024-05-01', '2024-05-06'))
+const room2 = new Room({name: 'una room', price: 200, discount: 25});
+const booking3 = new Booking({name: 'unName', email: 'unmail@mail.com', checkin: '2024-05-01', checkout: '2024-05-06', discount: 10, room: room2})
+const booking4 = new Booking({name: 'otroName', email: 'otromail@mail.com', checkin: '2024-04-15', checkout: '2024-05-01', discount: 10, room: room2})
+room2.setBookings(booking3, booking4);
+
+const rooms = [room, room2];
+console.log('total perc: ' + Room.totalOccupancyPercentage(rooms, '2024-04-15', '2024-05-05'));
