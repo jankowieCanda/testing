@@ -14,22 +14,46 @@ class Room {
 
     isOccupied(date) {
         let occupied = false;
+        let range;
         if(!date || date === '') {
             throw new Error('Error!! Missing Date!!');
-        } else if(Number(date)) {
+        } else if(Number.isInteger(date)) {
             throw new Error('Error!! Wrong date format!!');
         }
         for(let i = 0; i < this.bookings.length; i++) {
-            let range = rangeDates(this.bookings[i].checkin, this.bookings[i].checkout)
+            range = rangeDates(this.bookings[i].checkin, this.bookings[i].checkout);
             if(range.includes(date)) {
                 occupied = true;
             }
         }
+        
         return occupied;
         
     };
     
     percentageOccupancy(startDate, endDate) {
+        let occupied = 0; 
+        let rangeToSearch = rangeDatesEndIncluded(startDate, endDate);
+        let percentage; 
+        let bookingRange = [];
+
+        if((!startDate || startDate === '') || (!endDate || endDate === '')) {
+            throw new Error('Error!! Missing Date!!');
+        } else if(Number.isInteger(startDate) || Number.isInteger(endDate)) {
+            throw new Error('Error!! Wrong date format!!');
+        }
+
+        this.bookings.map((book) => {
+            bookingRange.push(rangeDates(book.checkin, book.checkout));
+        });
+
+        bookingRange.flat().map((date, i) => {
+            if(rangeToSearch.includes(date)) {
+                occupied++;
+            }
+        })
+
+        return percentage = ((occupied / rangeToSearch.length) * 100);
 
     };
 
@@ -69,14 +93,26 @@ function rangeDates(start, end) {
     return range;
 }
 
+function rangeDatesEndIncluded(start, end) {
+    let startDate = new Date(start);
+    let endDate = new Date(end)
+    let range = [];
+    for(let day = startDate; day <= endDate; day.setDate(day.getDate()+1)) {
+        range.push(day.toISOString().slice(0, 10));
+    }
+    return range;
+}
+
 module.exports = { Room, Booking };
 
 
-/* let rango = rangeDates('2024-04-15', '2024-05-01');
-console.log(rango); */
+/* let rango1 = rangeDates('2024-04-15', '2024-05-01');
+console.log('rango sin final incluido: ' + rango1)
+let rango2 = rangeDatesEndIncluded('2024-04-15', '2024-05-01');
+console.log('rango final incluido: ' + rango2); */
 
-/* const room = new Room({name: 'una room', price: 200, discount: 25});
+const room = new Room({name: 'una room', price: 200, discount: 25});
 const booking = new Booking({name: 'unName', email: 'unmail@mail.com', checkin: '2024-05-01', checkout: '2024-05-06', discount: 10})
 const booking2 = new Booking({name: 'otroName', email: 'otromail@mail.com', checkin: '2024-04-15', checkout: '2024-05-01', discount: 10})
 room.setBookings(booking, booking2);
-console.log(room); */
+console.log(room.percentageOccupancy('2024-05-01', '2024-05-06'))

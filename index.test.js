@@ -152,3 +152,106 @@ describe('Room - Checking isOccupied method', () => {
     expect(room.isOccupied('2024-03-11')).toBeFalsy();
   });
 });
+
+describe('Room - Checking percentageOccupancy method', () => {
+
+  test('Date parameter missing', () => {
+
+    const room = new Room({name: 'room1', price: 200, discount: 25});
+
+    const booking = new Booking({name: 'name1', email: 'mail@mail.com', checkin: '2024-05-01', checkout: '2024-05-06', discount: 10, room: 'room1'});    
+    const booking2 = new Booking({name: 'name2', email: 'mail@mail.com', checkin: '2024-03-04', checkout: '2024-03-10', discount: 10, room: 'room1'});
+    const booking3 = new Booking({name: 'name3', email: 'mail@mail.com', checkin: '2024-03-10', checkout: '2024-03-11', discount: 10, room: 'room1'});
+    const booking4 = new Booking({name: 'name4', email: 'mail@mail.com', checkin: '2024-05-07', checkout: '2024-06-07', discount: 10, room: 'room1'});
+    const booking5 = new Booking({name: 'name1', email: 'mail@mail.com', checkin: '2024-04-30', checkout: '2024-05-06', discount: 10, room: 'room1'});
+
+    room.setBookings(booking, booking2, booking3, booking4, booking5);
+    
+    expect(() => {room.percentageOccupancy()}).toThrow(new Error('Error!! Missing Date!!'));
+  });
+
+  test('Wrong date format startDate', () => {
+
+    const room = new Room({name: 'room1', price: 200, discount: 25});
+
+    const booking = new Booking({name: 'name1', email: 'mail@mail.com', checkin: '2024-05-01', checkout: '2024-05-06', discount: 10, room: 'room1'});    
+    const booking2 = new Booking({name: 'name2', email: 'mail@mail.com', checkin: '2024-03-04', checkout: '2024-03-10', discount: 10, room: 'room1'});
+    const booking3 = new Booking({name: 'name3', email: 'mail@mail.com', checkin: '2024-03-10', checkout: '2024-03-11', discount: 10, room: 'room1'});
+    const booking4 = new Booking({name: 'name4', email: 'mail@mail.com', checkin: '2024-05-07', checkout: '2024-06-07', discount: 10, room: 'room1'});
+    const booking5 = new Booking({name: 'name1', email: 'mail@mail.com', checkin: '2024-04-30', checkout: '2024-05-06', discount: 10, room: 'room1'});
+
+    room.setBookings(booking, booking2, booking3, booking4, booking5);
+    
+    expect(() => {room.percentageOccupancy(20240501, '2024-05-30')}).toThrow(new Error('Error!! Wrong date format!!'));
+  });
+
+  test('Wrong date format endDate', () => {
+
+    const room = new Room({name: 'room1', price: 200, discount: 25});
+
+    const booking = new Booking({name: 'name1', email: 'mail@mail.com', checkin: '2024-05-01', checkout: '2024-05-06', discount: 10, room: 'room1'});    
+    const booking2 = new Booking({name: 'name2', email: 'mail@mail.com', checkin: '2024-03-04', checkout: '2024-03-10', discount: 10, room: 'room1'});
+    const booking3 = new Booking({name: 'name3', email: 'mail@mail.com', checkin: '2024-03-10', checkout: '2024-03-11', discount: 10, room: 'room1'});
+    const booking4 = new Booking({name: 'name4', email: 'mail@mail.com', checkin: '2024-05-07', checkout: '2024-06-07', discount: 10, room: 'room1'});
+    const booking5 = new Booking({name: 'name1', email: 'mail@mail.com', checkin: '2024-04-30', checkout: '2024-05-06', discount: 10, room: 'room1'});
+
+    room.setBookings(booking, booking2, booking3, booking4, booking5);
+    
+    expect(() => {room.percentageOccupancy('2024-03-30', 20240501)}).toThrow(new Error('Error!! Wrong date format!!'));
+  });
+
+  test('Wrong date format startDate and endDate', () => {
+
+    const room = new Room({name: 'room1', price: 200, discount: 25});
+
+    const booking = new Booking({name: 'name1', email: 'mail@mail.com', checkin: '2024-05-01', checkout: '2024-05-06', discount: 10, room: 'room1'});    
+    const booking2 = new Booking({name: 'name2', email: 'mail@mail.com', checkin: '2024-03-04', checkout: '2024-03-10', discount: 10, room: 'room1'});
+    const booking3 = new Booking({name: 'name3', email: 'mail@mail.com', checkin: '2024-03-10', checkout: '2024-03-11', discount: 10, room: 'room1'});
+    const booking4 = new Booking({name: 'name4', email: 'mail@mail.com', checkin: '2024-05-07', checkout: '2024-06-07', discount: 10, room: 'room1'});
+    const booking5 = new Booking({name: 'name1', email: 'mail@mail.com', checkin: '2024-04-30', checkout: '2024-05-06', discount: 10, room: 'room1'});
+
+    room.setBookings(booking, booking2, booking3, booking4, booking5);
+    
+    expect(() => {room.percentageOccupancy(20240330, 20240501)}).toThrow(new Error('Error!! Wrong date format!!'));
+  });
+
+  test('100% full occupancy', () => {
+    const room = new Room({name: 'room1', price: 200, discount: 25});
+
+    const booking = new Booking({name: 'name1', email: 'mail@mail.com', checkin: '2024-05-01', checkout: '2024-05-06', discount: 10, room: 'room1'});    
+    const booking2 = new Booking({name: 'name2', email: 'mail@mail.com', checkin: '2024-05-06', checkout: '2024-05-10', discount: 10, room: 'room1'});
+    const booking3 = new Booking({name: 'name3', email: 'mail@mail.com', checkin: '2024-05-10', checkout: '2024-05-11', discount: 10, room: 'room1'});
+    const booking4 = new Booking({name: 'name4', email: 'mail@mail.com', checkin: '2024-05-11', checkout: '2024-06-07', discount: 10, room: 'room1'});
+
+    room.setBookings(booking, booking2, booking3, booking4);
+    
+    expect(room.percentageOccupancy('2024-05-11', '2024-06-06')).toBe(100);
+  });
+
+  test('50% occupancy', () => {
+    const room = new Room({name: 'room1', price: 200, discount: 25});
+
+    const booking = new Booking({name: 'name1', email: 'mail@mail.com', checkin: '2024-05-01', checkout: '2024-05-06', discount: 10, room: 'room1'});    
+    const booking2 = new Booking({name: 'name2', email: 'mail@mail.com', checkin: '2024-05-06', checkout: '2024-05-10', discount: 10, room: 'room1'});
+    const booking3 = new Booking({name: 'name3', email: 'mail@mail.com', checkin: '2024-05-10', checkout: '2024-05-11', discount: 10, room: 'room1'});
+    const booking4 = new Booking({name: 'name4', email: 'mail@mail.com', checkin: '2024-05-11', checkout: '2024-06-07', discount: 10, room: 'room1'});
+
+    room.setBookings(booking, booking2, booking3, booking4);
+    
+    expect(room.percentageOccupancy('2024-04-29', '2024-05-02')).toBe(50);
+  });
+
+  test('0% occupancy', () => {
+    const room = new Room({name: 'room1', price: 200, discount: 25});
+
+    const booking = new Booking({name: 'name1', email: 'mail@mail.com', checkin: '2024-05-01', checkout: '2024-05-06', discount: 10, room: 'room1'});    
+    const booking2 = new Booking({name: 'name2', email: 'mail@mail.com', checkin: '2024-05-06', checkout: '2024-05-10', discount: 10, room: 'room1'});
+    const booking3 = new Booking({name: 'name3', email: 'mail@mail.com', checkin: '2024-05-10', checkout: '2024-05-11', discount: 10, room: 'room1'});
+    const booking4 = new Booking({name: 'name4', email: 'mail@mail.com', checkin: '2024-05-11', checkout: '2024-06-07', discount: 10, room: 'room1'});
+
+    room.setBookings(booking, booking2, booking3, booking4);
+    
+    expect(room.percentageOccupancy('2023-05-11', '2023-06-06')).toBe(0);
+  });
+});
+
