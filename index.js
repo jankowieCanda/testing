@@ -17,7 +17,7 @@ class Room {
         let range;
         if(!date || date === '') {
             throw new Error('Error!! Missing Date!!');
-        } else if(Number.isInteger(date)) {
+        } else if(Number(date)) {
             throw new Error('Error!! Wrong date format!!');
         }
         for(let i = 0; i < this.bookings.length; i++) {
@@ -39,7 +39,7 @@ class Room {
 
         if((!startDate || startDate === '') || (!endDate || endDate === '')) {
             throw new Error('Error!! Missing Date!!');
-        } else if(Number.isInteger(startDate) || Number.isInteger(endDate)) {
+        } else if(Number(startDate) || Number(endDate)) {
             throw new Error('Error!! Wrong date format!!');
         }
 
@@ -65,7 +65,7 @@ class Room {
             throw new Error('ERROR!! NO hay habitaciones registradas!!')
         } else if((!startDate || startDate === '') || (!endDate || endDate === '')) {
             throw new Error('Error!! Missing Date!!');
-        } else if(Number.isInteger(startDate) || Number.isInteger(endDate)) {
+        } else if(Number(startDate) || Number(endDate)) {
             throw new Error('Error!! Wrong date format!!');
         }
 
@@ -126,19 +126,3 @@ function rangeDatesEndIncluded(start, end) {
 module.exports = { Room, Booking };
 
 
-/* let rango1 = rangeDates('2024-04-15', '2024-05-01');
-console.log('rango sin final incluido: ' + rango1)
-let rango2 = rangeDatesEndIncluded('2024-04-15', '2024-05-01');
-console.log('rango final incluido: ' + rango2); */
-
-/* const room = new Room({name: 'una room', price: 200, discount: 25});
-const booking = new Booking({name: 'unName', email: 'unmail@mail.com', checkin: '2024-05-01', checkout: '2024-05-06', discount: 10, room: room})
-const booking2 = new Booking({name: 'otroName', email: 'otromail@mail.com', checkin: '2024-04-15', checkout: '2024-05-01', discount: 10, room: room})
-room.setBookings(booking, booking2);
-const room2 = new Room({name: 'otra room', price: 200, discount: 25});
-const booking3 = new Booking({name: 'unName', email: 'unmail@mail.com', checkin: '2024-05-01', checkout: '2024-05-06', discount: 10, room: room2})
-const booking4 = new Booking({name: 'otroName', email: 'otromail@mail.com', checkin: '2024-04-15', checkout: '2024-05-01', discount: 10, room: room2})
-room2.setBookings(booking3, booking4);
-
-const rooms = [room, room2];
-console.log(Room.availableRooms(rooms, '2025-04-15', '2025-05-05')); */
