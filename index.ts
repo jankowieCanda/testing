@@ -1,20 +1,30 @@
+interface RoomProperties {
+    name: string,
+    bookings: Array<Booking>,
+    price: number,
+    discount: number
+}
 
 class Room {
+    name: string;
+    bookings: Array<Booking>;
+    price: number;
+    discount: number;
 
-    constructor({name, bookings, price, discount}) {
+    constructor({name, bookings, price, discount}: RoomProperties) {
         this.name = name;
         this.bookings = [];
         this.price = price;
         this.discount = discount;
     };
 
-    setBookings(...args) {
+    setBookings(...args: Array<Booking>): void {
         args.forEach(arg => this.bookings.push(arg))
     }
 
-    isOccupied(date) {
-        let occupied = false;
-        let range;
+    isOccupied(date: string): boolean {
+        let occupied: boolean = false;
+        let range: Array<string>;
         if(!date || date === '') {
             throw new Error('Error!! Missing Date!!');
         } else if(Number(date)) {
@@ -31,11 +41,11 @@ class Room {
         
     };
     
-    percentageOccupancy(startDate, endDate) {
-        let occupied = 0; 
-        let rangeToSearch = rangeDatesEndIncluded(startDate, endDate);
-        let percentage; 
-        let bookingRange = [];
+    percentageOccupancy(startDate: string, endDate: string): number {
+        let occupied: number = 0; 
+        let rangeToSearch: Array<string> = rangeDatesEndIncluded(startDate, endDate);
+        let percentage: number; 
+        let bookingRange: Array<Array<string>> = [];
 
         if((!startDate || startDate === '') || (!endDate || endDate === '')) {
             throw new Error('Error!! Missing Date!!');
@@ -57,9 +67,8 @@ class Room {
 
     };
 
-    static totalOccupancyPercentage(rooms, startDate, endDate) {
-        let percentage;
-        let count = 0;
+    static totalOccupancyPercentage(rooms: Array<Room>, startDate: string, endDate: string): number {
+        let count: number = 0;
 
         if(!rooms.length) {
             throw new Error('ERROR!! NO hay habitaciones registradas!!')
@@ -73,22 +82,36 @@ class Room {
             count += room.percentageOccupancy(startDate, endDate);
         })
         
-        return percentage = count / rooms.length; 
+        return count / rooms.length; 
     };
 
-    static availableRooms(rooms, startDate, endDate) {
+    static availableRooms(rooms: Array<Room>, startDate: string, endDate: string): Array<Room> {
         if(!rooms.length) {
             throw new Error('ERROR!! NO hay habitaciones registradas!!')
         }
 
-        let availables = rooms.filter((room) => room.percentageOccupancy(startDate, endDate) === 0);
-        return availables;
+        return rooms.filter((room) => room.percentageOccupancy(startDate, endDate) === 0);
     };
 };
 
-class Booking {
+interface BookingProperties {
+    name: string,
+    email: string,
+    checkin: string,
+    checkout: string,
+    discount: number,
+    room: Room
+}
 
-    constructor({name, email, checkin, checkout, discount, room}) {
+class Booking {
+    name: string;
+    email: string;
+    checkin: string;
+    checkout: string;
+    discount: number;
+    room: Room;
+
+    constructor({name, email, checkin, checkout, discount, room}: BookingProperties) {
         this.name = name;
         this.email = email;
         this.checkin = checkin;
@@ -103,26 +126,26 @@ class Booking {
 
 };
 
-function rangeDates(start, end) {
-    let startDate = new Date(start);
-    let endDate = new Date(end)
-    let range = [];
-    for(let day = startDate; day < endDate; day.setDate(day.getDate()+1)) {
+function rangeDates(start: string, end: string): Array<string> {
+    let startDate: Date = new Date(start);
+    let endDate: Date = new Date(end)
+    let range: Array<string> = [];
+    for(let day: Date = startDate; day < endDate; day.setDate(day.getDate()+1)) {
         range.push(day.toISOString().slice(0, 10));
     }
     return range;
 }
 
-function rangeDatesEndIncluded(start, end) {
+function rangeDatesEndIncluded(start: string, end: string): Array<string> {
     let startDate = new Date(start);
     let endDate = new Date(end)
-    let range = [];
+    let range: Array<string> = [];
     for(let day = startDate; day <= endDate; day.setDate(day.getDate()+1)) {
         range.push(day.toISOString().slice(0, 10));
     }
     return range;
 }
 
-module.exports = { Room, Booking };
+export { Room, Booking };
 
 
